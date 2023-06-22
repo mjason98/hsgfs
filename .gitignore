@@ -2,3 +2,8 @@
 venv
 .git
 __init__.py
+test.py
+chunk_server/*.part
+*.part
+client/*.part
+main_server/*.part
