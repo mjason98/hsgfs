@@ -1,0 +1,45 @@
+
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: gfs
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        #- postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  chunck_server:
+    build:
+      context: chunk_server
+      dockerfile: Dockerfile
+      args:
+        - APP_PORT=8080
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      STORAGE_PATH: data
+
+        # lb:
+        #build:
+        #context: loadBalancer
+        #dockerfile: Dockerfile
+        #restart: always
+        #depends_on:
+        #- app1
+        #- app2
+        #- app3
+        #ports:
+        #- "8088:8088"
+        #environment:
+        #IP_LIST: 8080|8081|8082
+
+volumes:
+  postgres_data:
