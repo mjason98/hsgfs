@@ -1,7 +1,17 @@
 # hsgfs
 A simple GFS implementation for a Harbour.Spase assigment
 
+## First Step
+
+First, clone this repository
+```shell
+git clone https://github.com/mjason98/hsgfs
+cd hsgfd
+```
+
 ## Build and run the servers
+
+Then, fun the following command to build and put to runing the chunk servers and the server manager:
 
 ```shell
 docker-compose build
@@ -20,10 +30,13 @@ pip install -r requirements.txt
 ```
 
 to use the cliente chose from the following commands:
-- add    Add a file
-- rm     Remove a file
-- get    Download a file
-- desc   Describe a file, with its name and size
+
+| Command |              Description                |
+|:-------:|-----------------------------------------|
+| add     | Add a file                              |
+| rm      | Remove a file                           |
+| get     | Download a file                         |
+| desc    | Describe a file, with its name and size |
 
 
 for example, inside client folder with the environment activated:
