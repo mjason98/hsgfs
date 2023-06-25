@@ -20,9 +20,30 @@ def get_chunk_distro(filename):
         conn.execute(query)
         fileid = conn.fetchone()
 
-        assert fileid is not None, f'File {filename} not exist'
+        assert fileid is not None,\
+            f'File {filename} does not exist'
 
-        print(fileid, type(fileid))
+        fileid = fileid[0]
+
+        query = f'''select t1.chunk_handler, t2.server_name
+                    from {SCHEMA}.chunks as t1
+                    left join {SCHEMA}.chunks_map as t2
+                        on t1.chunk_handler = t2.chunk_handler
+                    where fileid={fileid}
+                    order by t1.chunk_pos
+        '''
+
+        conn.execute(query)
+        echunks = conn.fetchall()
+
+        result_handlers = [ec[0] for ec in echunks]
+        result_servers = [ec[1] for ec in echunks]
+
+        return make_response(jsonify({
+            'handlers': result_handlers,
+            'servers': result_servers,
+            'fileid': fileid}),
+            200)
 
     except Exception as ex:
         print(f"An error apear {str(ex)}")
@@ -130,7 +151,8 @@ def gen_chunk_distro():
 
         return make_response(jsonify({
             'handlers': result_handlers,
-            'servers': result_servers}),
+            'servers': result_servers,
+            'fileid': fileid}),
             200)
 
     except Exception as ex:
