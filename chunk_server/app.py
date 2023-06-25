@@ -1,4 +1,5 @@
 from flask import Flask, send_file, jsonify, request
+from flask import make_response
 import os
 
 
@@ -40,6 +41,13 @@ def update_chunck(chunk_handler: str):
     file.save(file_path)
 
     return jsonify({'status': 200, 'message': 'chunk saved'})
+
+
+@app.route('/health', methods=['GET'])
+def get_health():
+    response_data = {"message": "Success"}
+    response = make_response(jsonify(response_data), 200)
+    return response
 
 
 if __name__ == '__main__':
