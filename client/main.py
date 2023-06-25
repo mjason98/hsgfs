@@ -18,6 +18,7 @@ CHUNK_SIZE = 1024
 
 
 def add_file(file):
+    file = os.path.basename(file)
     try:
         url = f'{HOST_MANAGER}/gen_chunk_distro'
         filesize = os.path.getsize(file)
@@ -58,6 +59,7 @@ def add_file(file):
 
 
 def get_file(file):
+    file = os.path.basename(file)
     try:
         url = f'{HOST_MANAGER}/get_chunk_distro/{file}'
 
@@ -91,6 +93,7 @@ def get_file(file):
 
 
 def remove_file(file):
+    file = os.path.basename(file)
     try:
         url = f'{HOST_MANAGER}/delete/{file}'
         response = requests.delete(url)
@@ -103,6 +106,7 @@ def remove_file(file):
 
 
 def describe_file(file):
+    file = os.path.basename(file)
     try:
         url = f'{HOST_MANAGER}/getsize/{file}'
         response = requests.get(url)
