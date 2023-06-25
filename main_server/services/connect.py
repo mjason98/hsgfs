@@ -1,5 +1,9 @@
 import psycopg2
 import os
+import hashlib
+
+
+SCHEMA = 'gfs'
 
 
 def create_conn():
@@ -18,3 +22,19 @@ def create_conn():
     )
 
     return conn.cursor()
+
+
+def hash_string_to_sha256(string):
+    # Convert the string to bytes
+    string_bytes = string.encode('utf-8')
+
+    # Create a new SHA-256 hash object
+    sha256_hash = hashlib.sha256()
+
+    # Update the hash object with the string bytes
+    sha256_hash.update(string_bytes)
+
+    # Get the hexadecimal representation of the hashed value
+    hashed_value = sha256_hash.hexdigest()
+
+    return hashed_value

@@ -1,4 +1,5 @@
 from flask import Flask, send_file, jsonify, request
+from flask import make_response
 import os
 
 
@@ -21,11 +22,20 @@ def delete_chunck(chunk_handler: str):
     try:
         if os.path.exists(file_path):
             os.remove(file_path)
-            return jsonify({'status': 200, 'message': 'deleted'})
+            return make_response(jsonify({
+                'status': 200,
+                'message': 'deleted'}),
+                200)
         else:
-            return jsonify({'status': 404, 'message': 'not found'})
+            return make_response(jsonify({
+                'status': 404,
+                'message': 'not found'}),
+                404)
     except Exception as ex:
-        return jsonify({'status': 500, 'message': str(ex)})
+        return make_response(jsonify({
+            'status': 500,
+            'message': str(ex)}),
+            500)
 
 
 @app.route('/update_chunk/<chunk_handler>', methods=['POST', 'PUT'])
@@ -39,7 +49,17 @@ def update_chunck(chunk_handler: str):
 
     file.save(file_path)
 
-    return jsonify({'status': 200, 'message': 'chunk saved'})
+    return make_response(jsonify({
+        'status': 200,
+        'message': 'chunk saved'}),
+        200)
+
+
+@app.route('/health', methods=['GET'])
+def get_health():
+    response_data = {"message": "Success"}
+    response = make_response(jsonify(response_data), 200)
+    return response
 
 
 if __name__ == '__main__':
