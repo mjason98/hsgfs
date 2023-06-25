@@ -125,7 +125,7 @@ def describe_file(file):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="File Management Script")
+    parser = argparse.ArgumentParser(description="Simple GFS client")
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     add_parser = subparsers.add_parser("add", help="Add a file")
