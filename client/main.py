@@ -74,16 +74,16 @@ def get_file(file):
         bar = tqdm(zip(handler, servers), desc=f'Downloading {file}')
 
         for chh, chs in bar:
-            with open(file, 'wb') as output_file:
+            with open(file, 'ab') as output_file:
                 chs = chs.split(':')
                 chs = f'{SERVERS_IP}:{chs[1]}'
 
                 chunk_url = f'http://{chs}/get_chunk/{chh}'
                 response = requests.get(chunk_url)
 
-                file_data = response.content
+                assert response.status_code == 200, 'error'
 
-                output_file.write(file_data)
+                output_file.write(response.content)
 
         print(f'# File {file} Downloaded :)')
     except Exception as ex:
