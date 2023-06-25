@@ -2,6 +2,7 @@ from flask import Flask, make_response, jsonify, request
 from services.connect import create_conn, SCHEMA
 from services.chuncks import get_distro_chunks
 from services.chuncks import gen_chunks_handlers
+import requests
 
 
 app = Flask(__name__)
@@ -162,7 +163,7 @@ def gen_chunk_distro():
             400)
 
 
-@app.route('/delete/<filename>')
+@app.route('/delete/<filename>', methods=['DELETE'])
 def delete_by_filename(filename):
     try:
         conn = create_conn()
@@ -176,14 +177,72 @@ def delete_by_filename(filename):
 
         assert fileid is not None, f'File {filename} not exist'
 
-        print(fileid, type(fileid))
+        fileid = fileid[0]
+
+        query = f'''select t1.chunk_handler, t2.server_name
+                    from {SCHEMA}.chunks as t1
+                    left join {SCHEMA}.chunks_map as t2
+                        on t1.chunk_handler = t2.chunk_handler
+                    where t1.fileid={fileid}
+                    order by t1.chunk_pos
+        '''
+
+        conn.execute(query)
+        echunks = conn.fetchall()
+
+        print(f'Attempt to delete chunks from file {filename}')
+        for chh, chs in echunks:
+            try:
+                del_url = f'{chs}/delete_chunk/{chh}'
+                response = requests.delete(del_url)
+
+                msg = response.json()['message']
+
+                assert response.status_code == 200, msg
+            except Exception as ex:
+                print(f'> Error {str(ex)}')
+                print(f'> Skiped chunk {chh} in {chs}')
+
+        query = f'''delete from {SCHEMA}.files
+            where id={fileid}
+        '''
+
+        conn.execute(query)
+        conn.execute('commit')
+
+        return make_response(jsonify({'message': 'deleted file'}), 200)
 
     except Exception as ex:
         print(f"An error apear {str(ex)}")
         return make_response(jsonify({'message': str(ex)}), 400)
 
-# def mark_soft_delete():
-# def validate_file():
+
+@app.route('/getsize/<filename>', methods=['GET'])
+def get_file_size(filename):
+    try:
+        conn = create_conn()
+        query = f'''select id, filesize from
+                {SCHEMA}.files
+                where filename='{filename}'
+        '''
+
+        conn.execute(query)
+        result = conn.fetchone()
+
+        assert result is not None,\
+            f'File {filename} may not exist'
+
+        return make_response(jsonify({
+            'filename': filename,
+            'fileid': result[0],
+            'filesize': result[1]}),
+            200)
+    except Exception as ex:
+        print(f'Error {str(ex)}')
+        return make_response(jsonify({
+            'status': 400,
+            'message': str(ex)}),
+            400)
 
 
 if __name__ == '__main__':
