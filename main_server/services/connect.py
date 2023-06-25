@@ -7,17 +7,11 @@ SCHEMA = 'gfs'
 
 
 def create_conn():
-    db_host = 'localhost'
-    db_port = 5432
-    db_name = 'gfs'
-    db_user = 'admin'
-    db_password = '1234'
-
-    #db_host = os.environ.get('DB_HOST')
-    #db_port = os.environ.get('DB_PORT')
-    #db_name = os.environ.get('DB_NAME')
-    #db_user = os.environ.get('DB_USER')
-    #db_password = os.environ.get('DB_PASSWORD')
+    db_host = os.environ.get('DB_HOST')
+    db_port = os.environ.get('DB_PORT')
+    db_name = os.environ.get('DB_NAME')
+    db_user = os.environ.get('DB_USER')
+    db_password = os.environ.get('DB_PASSWORD')
 
     conn = psycopg2.connect(
         host=db_host,

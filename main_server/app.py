@@ -2,7 +2,7 @@ from flask import Flask, make_response, jsonify, request
 from services.connect import create_conn, SCHEMA
 from services.chuncks import get_distro_chunks
 from services.chuncks import gen_chunks_handlers
-import requests
+import requests, sys
 
 
 app = Flask(__name__)
@@ -47,7 +47,7 @@ def get_chunk_distro(filename):
             200)
 
     except Exception as ex:
-        print(f"An error apear {str(ex)}")
+        print(f"An error apear {str(ex)}", file=sys.stderr)
         return make_response(jsonify({'message': str(ex)}), 400)
 
 
@@ -157,7 +157,7 @@ def gen_chunk_distro():
             200)
 
     except Exception as ex:
-        print(f'An error apear {str(ex)}')
+        print(f'An error apear {str(ex)}', file=sys.stderr)
         return make_response(jsonify({
             'message': str(ex)}),
             400)
@@ -190,7 +190,7 @@ def delete_by_filename(filename):
         conn.execute(query)
         echunks = conn.fetchall()
 
-        print(f'Attempt to delete chunks from file {filename}')
+        print(f'Attempt to delete chunks from file {filename}', file=sys.stderr)
         for chh, chs in echunks:
             try:
                 del_url = f'{chs}/delete_chunk/{chh}'
@@ -200,8 +200,8 @@ def delete_by_filename(filename):
 
                 assert response.status_code == 200, msg
             except Exception as ex:
-                print(f'> Error {str(ex)}')
-                print(f'> Skiped chunk {chh} in {chs}')
+                print(f'> Error {str(ex)}', file=sys.stderr)
+                print(f'> Skiped chunk {chh} in {chs}', file=sys.stderr)
 
         query = f'''delete from {SCHEMA}.files
             where id={fileid}
@@ -213,7 +213,7 @@ def delete_by_filename(filename):
         return make_response(jsonify({'message': 'deleted file'}), 200)
 
     except Exception as ex:
-        print(f"An error apear {str(ex)}")
+        print(f"An error apear {str(ex)}", file=sys.stderr)
         return make_response(jsonify({'message': str(ex)}), 400)
 
 
@@ -238,7 +238,7 @@ def get_file_size(filename):
             'filesize': result[1]}),
             200)
     except Exception as ex:
-        print(f'Error {str(ex)}')
+        print(f'Error {str(ex)}', file=sys.stderr)
         return make_response(jsonify({
             'status': 400,
             'message': str(ex)}),

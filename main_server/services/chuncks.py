@@ -5,8 +5,7 @@ from .connect import hash_string_to_sha256
 
 
 def get_chunks():
-    # raw_strings = os.environ.get('CHUNKS_PORTS')
-    raw_strings = "app1:8080"
+    raw_strings = os.environ.get('CHUNKS_PORTS')
     ports = raw_strings.split(';')
 
     return ports
