@@ -6,3 +6,4 @@ chunk_server/*.part
 *.part
 client/*.part
 main_server/*.part
+test.txt
