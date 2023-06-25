@@ -2,7 +2,8 @@ from flask import Flask, make_response, jsonify, request
 from services.connect import create_conn, SCHEMA
 from services.chuncks import get_distro_chunks
 from services.chuncks import gen_chunks_handlers
-import requests, sys
+import requests
+import sys
 
 
 app = Flask(__name__)
@@ -190,10 +191,12 @@ def delete_by_filename(filename):
         conn.execute(query)
         echunks = conn.fetchall()
 
-        print(f'Attempt to delete chunks from file {filename}', file=sys.stderr)
+        print(f'Attempt to delete chunks from file {filename}',
+              file=sys.stderr)
+
         for chh, chs in echunks:
             try:
-                del_url = f'{chs}/delete_chunk/{chh}'
+                del_url = f'http://{chs}/delete_chunk/{chh}'
                 response = requests.delete(del_url)
 
                 msg = response.json()['message']
