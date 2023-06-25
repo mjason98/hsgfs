@@ -176,7 +176,8 @@ def delete_by_filename(filename):
         conn.execute(query)
         fileid = conn.fetchone()
 
-        assert fileid is not None, f'File {filename} not exist'
+        assert fileid is not None,\
+            f'File {filename} does not exist'
 
         fileid = fileid[0]
 

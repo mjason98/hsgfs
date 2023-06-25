@@ -91,11 +91,37 @@ def get_file(file):
 
 
 def remove_file(file):
-    print(f"Removing file: {file}")
+    try:
+        url = f'{HOST_MANAGER}/delete/{file}'
+        response = requests.delete(url)
+
+        assert response.status_code == 200, response.json()['message']
+
+        print(f'# File {file} deleted')
+    except Exception as ex:
+        print(f"> Error: {str(ex)}")
 
 
 def describe_file(file):
-    print(f"Describing file: {file}")
+    try:
+        url = f'{HOST_MANAGER}/getsize/{file}'
+        response = requests.get(url)
+
+        assert response.status_code == 200, response.json()['message']
+
+        body = response.json()
+        name = body['filename']
+        size = body['filesize']
+        # fid = body['fileid']
+
+        print("\t------------------------------------------------")
+        print(f'\tFile Name:\t{name}')
+        print(f'\tFile Size:\t{size}')
+        # print(f'\tServer File Id:\t{fid}')
+        print("\t------------------------------------------------")
+
+    except Exception as ex:
+        print(f"> Error: {str(ex)}")
 
 
 if __name__ == '__main__':
